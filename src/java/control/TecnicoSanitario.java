@@ -2,7 +2,7 @@ package control;
 
 public class TecnicoSanitario {
     private int id=0;
-    private boolean libre=true;
+    private volatile boolean libre=true;
 
     public TecnicoSanitario(int id) {
         this.id=id+1;

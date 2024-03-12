@@ -4,19 +4,20 @@ import java.util.concurrent.TimeUnit;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Random;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class GeneradorPacientes {
 
     private static int cont = 0;
     private static boolean finalizar = false;
     private static int boxes = 0;
-    private static volatile List<Paciente> listaPacientes = new ArrayList<>();
+    private static volatile ConcurrentLinkedQueue<Paciente> listaPacientes = new ConcurrentLinkedQueue<>();
 
     public GeneradorPacientes(int boxes) {
         this.boxes = boxes;
     }
 
-    public static synchronized void GeneradorPacientes(List<SalaEspera> listEspera) {
+    public static synchronized void GeneradorPacientes(ConcurrentLinkedQueue<SalaEspera> listEspera) {
         contador();
         Thread Genpaciente = new Thread(() -> {
             int num = 0;
@@ -60,11 +61,11 @@ public class GeneradorPacientes {
         contador.start();
     }
 
-    public static List<Paciente> getListaPacientes() {
+    public static ConcurrentLinkedQueue<Paciente> getListaPacientes() {
         return listaPacientes;
     }
 
-    public static void setListaPacientes(List<Paciente> listaPacientes) {
+    public static void setListaPacientes(ConcurrentLinkedQueue<Paciente> listaPacientes) {
         GeneradorPacientes.listaPacientes = listaPacientes;
     }
 }

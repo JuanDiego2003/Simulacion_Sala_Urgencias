@@ -6,10 +6,10 @@ import java.util.List;
 public class Boxes {
 
     private int idBox;
-    private Paciente paciente;
-    private List<Especialista> especialista = new ArrayList<>();
-    private List<TecnicoSanitario> tecnicoSanitario = new ArrayList<>();
-    private boolean ocupado=false;
+    private volatile Paciente paciente;
+    private volatile ConcurrentLinkedQueue<Especialista> especialista = new ConcurrentLinkedQueue<>();
+    private volatile ConcurrentLinkedQueue<TecnicoSanitario> tecnicoSanitario = new ConcurrentLinkedQueue<>();
+    private volatile boolean ocupado=false;
 
     public Boxes(int idBox) {
         this.idBox = idBox + 1;
@@ -31,11 +31,11 @@ public class Boxes {
         this.paciente = paciente;
     }
 
-    public List<Especialista> getEspecialistas() {
+    public ConcurrentLinkedQueue<Especialista> getEspecialistas() {
         return especialista;
     }
 
-    public void setEspecialistas(List<Especialista> especialistas) {
+    public void setEspecialistas(ConcurrentLinkedQueue<Especialista> especialistas) {
         this.especialista = especialistas;
     }
 
@@ -43,7 +43,7 @@ public class Boxes {
         return tecnicoSanitario;
     }
 
-    public void setTecnicosSanitarios(List<TecnicoSanitario> tecnicosSanitarios) {
+    public void setTecnicosSanitarios(ConcurrentLinkedQueue<TecnicoSanitario> tecnicosSanitarios) {
         this.tecnicoSanitario = tecnicosSanitarios;
     }
 

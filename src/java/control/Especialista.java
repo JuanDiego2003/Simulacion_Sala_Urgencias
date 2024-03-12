@@ -6,7 +6,7 @@ public class Especialista {
 
     private int id = 0;
     private String especializacion = "";
-    private boolean libre=true;
+    private volatile boolean libre=true;
 
     public Especialista(int id) {
         this.id = id+1;

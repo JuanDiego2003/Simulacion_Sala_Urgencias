@@ -1,9 +1,9 @@
 package control;
 
 public class Paciente {
-    private int id= 0;
-    private String nombre="";
-    private int gravedad= 0;
+    private volatile int id= 0;
+    private volatile String nombre="";
+    private volatile int gravedad= 0;
 
     public Paciente(int id, String nombre, int gravedad) {
         this.id = id;

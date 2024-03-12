@@ -9,34 +9,27 @@ import java.util.List;
 
 public class GestionBox {
 
-    public static synchronized void GestionarBoxes(List<Paciente> listaPacientes, List<Especialista> listaEspecialistas,
-            List<TecnicoSanitario> listaTecnicoSanitarios, List<Boxes> listaBoxs, List<SalaEspera> listEspera) {
+    public static synchronized void GestionarBoxes(ConcurrentLinkedQueue<Paciente> listaPacientes, ConcurrentLinkedQueue<Especialista> listaEspecialistas,
+            ConcurrentLinkedQueue<TecnicoSanitario> listaTecnicoSanitarios, ConcurrentLinkedQueue<Boxes> listaBoxs, ConcurrentLinkedQueue<SalaEspera> listEspera) {
 
         Object lock = new Object();
         List<Thread> listaThreads = new ArrayList<>();
-        synchronized (listaBoxs) {
-            for (int i = 0; i < listaBoxs.size(); i++) {
-                final int indice = i;
-                Thread Box = new Thread(() -> {
-                    Boxes box = listaBoxs.get(indice);
-                    if (isOcupado(box)) {
+
+        for (Boxes box : listaBoxs) {
+            Thread Box = new Thread(() -> {
+                while (true) {
+                    if (box.isOcupado()) {
                         box.setPaciente(listEspera.get(0).getPaciente());
                         listEspera.remove(box.getPaciente());
                     }
-                });
-                listaThreads.add(Box);
-            }
+                }
+
+            });
+            listaThreads.add(Box);
         }
+
         for (Thread listaThread : listaThreads) {
             listaThread.start();
-        }
-    }
-
-    public static synchronized boolean isOcupado(Boxes box) {
-        if (!box.isOcupado()) {
-            return false;
-        } else {
-            return true;
         }
     }
 

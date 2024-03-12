@@ -6,8 +6,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Random;
+import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.TimeUnit;
 import javax.servlet.annotation.WebServlet;
 import javax.swing.Box;
@@ -17,11 +20,11 @@ public class Controlador extends HttpServlet {
 
     public static final int BOXES = 10;
     public boolean iniciado = false;
-    public volatile List<Paciente> listaPacientes = new ArrayList<>();
-    public volatile List<Especialista> listaEspecialistas = new ArrayList<>();
-    public volatile List<TecnicoSanitario> listaTecnicoSanitarios = new ArrayList<>();
-    public volatile List<Boxes> listaBoxs = new ArrayList<>();
-    public volatile List<SalaEspera> listEspera = new ArrayList<>();
+    public volatile ConcurrentLinkedQueue<Paciente> listaPacientes = new ConcurrentLinkedQueue<>();
+    public volatile ConcurrentLinkedQueue<Especialista> listaEspecialistas = new ConcurrentLinkedQueue<>();
+    public volatile ConcurrentLinkedQueue<TecnicoSanitario> listaTecnicoSanitarios = new ConcurrentLinkedQueue<>();
+    public volatile ConcurrentLinkedQueue<Boxes> listaBoxs = new ConcurrentLinkedQueue<>();
+    public volatile ConcurrentLinkedQueue<SalaEspera> listEspera = new ConcurrentLinkedQueue<>();
 
     protected synchronized void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
@@ -33,15 +36,33 @@ public class Controlador extends HttpServlet {
             listEspera = GenerarEspera();
             listaPacientes = IniciarGeneracionPacientes(listEspera);
             AsignarSalaEspera.AsignarEspera(listEspera, listaPacientes);
-            GestionBox.GestionarBoxes(listaPacientes, listaEspecialistas, listaTecnicoSanitarios, listaBoxs, listEspera);
+            //GestionBox.GestionarBoxes(listaPacientes, listaEspecialistas, listaTecnicoSanitarios, listaBoxs, listEspera);
+        }
+
+        List<Thread> listaThreads = new ArrayList<>();
+
+        for (Boxes box : listaBoxs) {
+            Thread Box = new Thread(() -> {
+                if (box.isOcupado()) {
+                    box.setPaciente(listEspera.get(0).getPaciente());
+                    listEspera.remove(box.getPaciente());
+                }
+
+                request.setAttribute("aaa", listaEspecialistas);
+                request.setAttribute("aaaa", listaTecnicoSanitarios);
+                request.setAttribute("boxs", listaBoxs);
+                request.setAttribute("aa", listEspera);
+            });
+            listaThreads.add(Box);
+
+        }
+
+        for (Thread listaThread : listaThreads) {
+            listaThread.start();
         }
 
         // Establecer un atributo en el objeto request
         String mensaje = "Hola desde el servlet";
-        request.setAttribute("aa", listEspera);
-        request.setAttribute("aaa", listaEspecialistas);
-        request.setAttribute("aaaa", listaTecnicoSanitarios);
-        request.setAttribute("boxs", listaBoxs);
 
         request.setAttribute("mensajeAtributo", mensaje);
         request.setAttribute("boxes", BOXES);
@@ -49,7 +70,7 @@ public class Controlador extends HttpServlet {
         request.getRequestDispatcher("/index.jsp").forward(request, response);
     }
 
-    public static synchronized List<Paciente> IniciarGeneracionPacientes(List<SalaEspera> listEspera) {
+    public static synchronized ConcurrentLinkedQueue<Paciente> IniciarGeneracionPacientes(ConcurrentLinkedQueue<SalaEspera> listEspera) {
         GeneradorPacientes generadorPacientes = new GeneradorPacientes(BOXES);
         generadorPacientes.GeneradorPacientes(listEspera);
         // Esperar a que se genere la lista antes de continuar
@@ -61,8 +82,8 @@ public class Controlador extends HttpServlet {
         return generadorPacientes.getListaPacientes();
     }
 
-    public static List<Especialista> GenerarEspecialistas() {
-        List<Especialista> listaEspecialistas = new ArrayList<>();
+    public static ConcurrentLinkedQueue<Especialista> GenerarEspecialistas() {
+        ConcurrentLinkedQueue<Especialista> listaEspecialistas = new ConcurrentLinkedQueue<>();
         int cantidadEsp = BOXES / 5;
         for (int i = 0; i < cantidadEsp; i++) {
             //repite los medicos aunque sean menos de 3
@@ -80,8 +101,8 @@ public class Controlador extends HttpServlet {
         return listaEspecialistas;
     }
 
-    public static List<TecnicoSanitario> GenerarTecnicoSanitarios() {
-        List<TecnicoSanitario> listaTecnicoSanitarios = new ArrayList<>();
+    public static ConcurrentLinkedQueue<TecnicoSanitario> GenerarTecnicoSanitarios() {
+        ConcurrentLinkedQueue<TecnicoSanitario> listaTecnicoSanitarios = new ConcurrentLinkedQueue<>();
         int cantidadTecnic = (BOXES / 5) * 3;
         for (int i = 0; i < cantidadTecnic; i++) {
             TecnicoSanitario tecnicoSanitario = new TecnicoSanitario(i);
@@ -90,8 +111,8 @@ public class Controlador extends HttpServlet {
         return listaTecnicoSanitarios;
     }
 
-    private static List<Boxes> GenerarBoxes() {
-        List<Boxes> listaBoxs = new ArrayList<>();
+    private static ConcurrentLinkedQueue<Boxes> GenerarBoxes() {
+        ConcurrentLinkedQueue<Boxes> listaBoxs = new ConcurrentLinkedQueue<>();
         for (int i = 0; i < BOXES; i++) {
             Boxes box = new Boxes(i);
             listaBoxs.add(box);
@@ -99,8 +120,8 @@ public class Controlador extends HttpServlet {
         return listaBoxs;
     }
 
-    private List<SalaEspera> GenerarEspera() {
-        List<SalaEspera> listaEspera = new ArrayList<>();
+    private ConcurrentLinkedQueue<SalaEspera> GenerarEspera() {
+        ConcurrentLinkedQueue<SalaEspera> listaEspera = new ConcurrentLinkedQueue<>();
         for (int i = 0; i < 5; i++) {
             SalaEspera salaEspera = new SalaEspera(i);
             listaEspera.add(salaEspera);

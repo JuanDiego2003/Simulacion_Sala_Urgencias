@@ -116,5 +116,5 @@
     //Función para recargar la página cada segundo
     setInterval(function () {
         location.reload();
-    }, 1000); // 100 milisegundos = 1 segundo
+    }, 500); // 100 milisegundos = 1 segundo
 </script>

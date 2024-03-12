@@ -10,8 +10,8 @@ package control;
  */
 public class SalaEspera {
     private int idBox;
-    private Paciente paciente;
-    private boolean ocupado;
+    private volatile Paciente paciente;
+    private volatile boolean ocupado;
 
     public SalaEspera(int idBox) {
         this.idBox = idBox+1;
