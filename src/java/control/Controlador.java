@@ -36,34 +36,15 @@ public class Controlador extends HttpServlet {
             listEspera = GenerarEspera();
             listaPacientes = IniciarGeneracionPacientes(listEspera);
             AsignarSalaEspera.AsignarEspera(listEspera, listaPacientes);
-            //GestionBox.GestionarBoxes(listaPacientes, listaEspecialistas, listaTecnicoSanitarios, listaBoxs, listEspera);
+            GestionBox.GestionarBoxes(listaPacientes, listaEspecialistas, listaTecnicoSanitarios, listaBoxs, listEspera);
         }
-
-        List<Thread> listaThreads = new ArrayList<>();
-
-        for (Boxes box : listaBoxs) {
-            Thread Box = new Thread(() -> {
-                if (box.isOcupado()) {
-                    box.setPaciente(listEspera.get(0).getPaciente());
-                    listEspera.remove(box.getPaciente());
-                }
-
-                request.setAttribute("aaa", listaEspecialistas);
-                request.setAttribute("aaaa", listaTecnicoSanitarios);
-                request.setAttribute("boxs", listaBoxs);
-                request.setAttribute("aa", listEspera);
-            });
-            listaThreads.add(Box);
-
-        }
-
-        for (Thread listaThread : listaThreads) {
-            listaThread.start();
-        }
-
+        //GestionBox.GestionarBoxes(listaPacientes, listaEspecialistas, listaTecnicoSanitarios, listaBoxs, listEspera);
         // Establecer un atributo en el objeto request
         String mensaje = "Hola desde el servlet";
-
+        request.setAttribute("aaa", listaEspecialistas);
+        request.setAttribute("aaaa", listaTecnicoSanitarios);
+        request.setAttribute("boxs", listaBoxs);
+        request.setAttribute("aa", listEspera);
         request.setAttribute("mensajeAtributo", mensaje);
         request.setAttribute("boxes", BOXES);
         // Redirigir a la página JSP
@@ -120,7 +101,7 @@ public class Controlador extends HttpServlet {
         return listaBoxs;
     }
 
-    private ConcurrentLinkedQueue<SalaEspera> GenerarEspera() {
+    private static ConcurrentLinkedQueue<SalaEspera> GenerarEspera() {
         ConcurrentLinkedQueue<SalaEspera> listaEspera = new ConcurrentLinkedQueue<>();
         for (int i = 0; i < 5; i++) {
             SalaEspera salaEspera = new SalaEspera(i);

@@ -18,14 +18,14 @@ public class AsignarSalaEspera {
         Thread Genpaciente = new Thread(() -> {
             while (true) {
                 for (SalaEspera espera : listEspera) {
-                    if (!listaPacientes.isEmpty()) {
-                        espera.setPaciente(listaPacientes.get(0));
+                    if (!listaPacientes.isEmpty() && !espera.isOcupado()) {
+                        espera.setPaciente(listaPacientes.poll());
                         espera.setOcupado(true);
-                        listaPacientes.remove(0);
                     }
                 }
             }
         });
         Genpaciente.start();
+        System.out.println("");
     }
 }

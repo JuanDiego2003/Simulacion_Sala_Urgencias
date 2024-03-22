@@ -1,3 +1,4 @@
+<%@page import="java.util.concurrent.ConcurrentLinkedQueue"%>
 <%@page import="control.Boxes"%>
 <%@page import="control.SalaEspera"%>
 <%@page import="control.TecnicoSanitario"%>
@@ -58,17 +59,17 @@
         %>
         <%=mensaje%>
         <%
-            List<SalaEspera> pacientes = (List<SalaEspera>) request.getAttribute("aa");
+            List<SalaEspera> pacientes = new ArrayList<>((ConcurrentLinkedQueue<SalaEspera>) request.getAttribute("aa"));
         %>
         <%
-            List<Especialista> espe = (List<Especialista>) request.getAttribute("aaa");
+            List<Especialista> espe = new ArrayList<>((ConcurrentLinkedQueue<Especialista>) request.getAttribute("aaa"));
             for (Especialista es : espe) {%>
         <p><%=es.getEspecializacion()%></p>
         <%}
         %>
         <%
-            List<TecnicoSanitario> tec = (List<TecnicoSanitario>) request.getAttribute("aaaa");
-            List<Boxes> listBox = (List<Boxes>) request.getAttribute("boxs");
+            List<TecnicoSanitario> tec = new ArrayList<>((ConcurrentLinkedQueue<TecnicoSanitario>) request.getAttribute("aaaa"));
+            List<Boxes> listBox = new ArrayList<>((ConcurrentLinkedQueue<Boxes>) request.getAttribute("boxs"));
 
             for (TecnicoSanitario es : tec) {%>
         <p><%=es.getId()%></p>
@@ -77,15 +78,27 @@
         <p id="mensaje">chupa</p>
         <div>
             <table>
+                <% if (pacientes.size() > 0) {%>
                 <tr class="laterales"  id="top">
-                    <td><%=(pacientes.get(0).getPaciente() != null) ? pacientes.get(0).getPaciente().getNombre() : ""%></td>
-                    <td><%=(pacientes.get(1).getPaciente() != null) ? pacientes.get(1).getPaciente().getNombre() : ""%></td>
-                    <td><%=(pacientes.get(2).getPaciente() != null) ? pacientes.get(2).getPaciente().getNombre() : ""%></td>
+                    <td><%=(pacientes.get(0).getPaciente() != null) ? pacientes.get(0).getPaciente().getNombre() : "-"%></td>
+                    <td><%=(pacientes.get(1).getPaciente() != null) ? pacientes.get(1).getPaciente().getNombre() : "-"%></td>
+                    <td><%=(pacientes.get(2).getPaciente() != null) ? pacientes.get(2).getPaciente().getNombre() : "-"%></td>
                 </tr>
                 <tr class="laterales" id="bottom">4
-                    <td><%= (pacientes.get(3).getPaciente() != null) ? pacientes.get(3).getPaciente().getNombre() : ""%></td>
-                    <td><%= (pacientes.get(4).getPaciente() != null) ? pacientes.get(4).getPaciente().getNombre() : ""%></td>
+                    <td><%= (pacientes.get(3).getPaciente() != null) ? pacientes.get(3).getPaciente().getNombre() : "-"%></td>
+                    <td><%= (pacientes.get(4).getPaciente() != null) ? pacientes.get(4).getPaciente().getNombre() : "-"%></td>
                 </tr>
+                <%} else {%>
+                <tr class="laterales"  id="top">
+                    <td>-</td>
+                    <td>-</td>
+                    <td>-</td>
+                </tr>
+                <tr class="laterales" id="bottom">4
+                    <td>-</td>
+                    <td>-</td>
+                </tr>
+                <%}%>
                 <% int idBox = 0;
                     for (int i = 0; i < fondo; i++) {%>
                 <tr class="Urgencias">
@@ -98,7 +111,7 @@
                     %>                                
                     <td class="Box" id="Box<%=idBox%>">
                         <p>
-                        <%=(listBox.get(i).getPaciente() != null) ? listBox.get(i).getPaciente().getNombre():""%>
+                            <%=(listBox.get(idBox-1).getPaciente() != null) ? listBox.get(idBox-1).getPaciente().getNombre() : ""%>
                         </p>
                     </td>
                     <%}

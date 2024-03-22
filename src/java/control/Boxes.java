@@ -1,7 +1,6 @@
 package control;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class Boxes {
 
@@ -39,7 +38,7 @@ public class Boxes {
         this.especialista = especialistas;
     }
 
-    public List<TecnicoSanitario> getTecnicosSanitarios() {
+    public ConcurrentLinkedQueue<TecnicoSanitario> getTecnicosSanitarios() {
         return tecnicoSanitario;
     }
 

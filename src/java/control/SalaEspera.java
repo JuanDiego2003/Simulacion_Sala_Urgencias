@@ -11,7 +11,7 @@ package control;
 public class SalaEspera {
     private int idBox;
     private volatile Paciente paciente;
-    private volatile boolean ocupado;
+    private volatile boolean ocupado = false;
 
     public SalaEspera(int idBox) {
         this.idBox = idBox+1;
@@ -40,5 +40,8 @@ public class SalaEspera {
     public void setOcupado(boolean ocupado) {
         this.ocupado = ocupado;
     }
-    
+    public void liberar(){
+        this.ocupado=false;
+        this.paciente=null;
+    }
 }
