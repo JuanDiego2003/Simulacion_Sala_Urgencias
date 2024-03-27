@@ -80,13 +80,39 @@
             <table>
                 <% if (pacientes.size() > 0) {%>
                 <tr class="laterales"  id="top">
-                    <td><%=(pacientes.get(0).getPaciente() != null) ? pacientes.get(0).getPaciente().getNombre() : "-"%></td>
-                    <td><%=(pacientes.get(1).getPaciente() != null) ? pacientes.get(1).getPaciente().getNombre() : "-"%></td>
-                    <td><%=(pacientes.get(2).getPaciente() != null) ? pacientes.get(2).getPaciente().getNombre() : "-"%></td>
+                    <td>
+                        <p>
+                            <%=(pacientes.get(0).getPaciente() != null) ? pacientes.get(0).getPaciente().getNombre() : "-"%> <br>
+                            <%=(pacientes.get(0).getPaciente() != null) ? "Gravedad" + pacientes.get(0).getPaciente().getGravedad() : ""%>
+                        </p>
+                    </td>
+
+                    <td>
+                        <p>
+                            <%=(pacientes.get(1).getPaciente() != null) ? pacientes.get(1).getPaciente().getNombre() : "-"%> <br>
+                            <%=(pacientes.get(1).getPaciente() != null) ? "Gravedad" + pacientes.get(1).getPaciente().getGravedad() : ""%>
+                        </p>
+                    </td>
+                    <td>
+                        <p>
+                            <%=(pacientes.get(2).getPaciente() != null) ? pacientes.get(2).getPaciente().getNombre() : "-"%> <br>
+                            <%=(pacientes.get(2).getPaciente() != null) ? "Gravedad" + pacientes.get(2).getPaciente().getGravedad() : ""%>
+                        </p>
+                    </td>
                 </tr>
                 <tr class="laterales" id="bottom">4
-                    <td><%= (pacientes.get(3).getPaciente() != null) ? pacientes.get(3).getPaciente().getNombre() : "-"%></td>
-                    <td><%= (pacientes.get(4).getPaciente() != null) ? pacientes.get(4).getPaciente().getNombre() : "-"%></td>
+                    <td>
+                        <p>
+                            <%=(pacientes.get(3).getPaciente() != null) ? pacientes.get(3).getPaciente().getNombre() : "-"%> <br>
+                            <%=(pacientes.get(3).getPaciente() != null) ? "Gravedad:" + pacientes.get(3).getPaciente().getGravedad() : ""%>
+                        </p>
+                    </td>
+                    <td>
+                        <p>
+                            <%=(pacientes.get(4).getPaciente() != null) ? pacientes.get(4).getPaciente().getNombre() : "-"%> <br>
+                            <%=(pacientes.get(4).getPaciente() != null) ? "Gravedad:" + pacientes.get(4).getPaciente().getGravedad() : ""%>
+                        </p>
+                    </td>
                 </tr>
                 <%} else {%>
                 <tr class="laterales"  id="top">
@@ -111,7 +137,10 @@
                     %>                                
                     <td class="Box" id="Box<%=idBox%>">
                         <p>
-                            <%=(listBox.get(idBox-1).getPaciente() != null) ? listBox.get(idBox-1).getPaciente().getNombre() : ""%>
+                            <%=(listBox.get(idBox - 1).getPaciente() != null) ? listBox.get(idBox - 1).getPaciente().getNombre() : ""%><br>
+                            <%=(listBox.get(idBox - 1).getPaciente() != null) ? "Gravedad:" + listBox.get(idBox - 1).getPaciente().getGravedad() : ""%><br>
+                            Cantidad tecnicos:<%=listBox.get(idBox - 1).getTecnicosSanitarios().size()%><br>
+                            <%=(listBox.get(idBox - 1).getPaciente() != null) ? listBox.get(idBox - 1).getPaciente().getTiempoAencion() : ""%>
                         </p>
                     </td>
                     <%}

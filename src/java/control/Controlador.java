@@ -18,7 +18,7 @@ import javax.swing.Box;
 @WebServlet("")
 public class Controlador extends HttpServlet {
 
-    public static final int BOXES = 10;
+    public static final int BOXES = 5;
     public boolean iniciado = false;
     public volatile ConcurrentLinkedQueue<Paciente> listaPacientes = new ConcurrentLinkedQueue<>();
     public volatile ConcurrentLinkedQueue<Especialista> listaEspecialistas = new ConcurrentLinkedQueue<>();
@@ -34,7 +34,7 @@ public class Controlador extends HttpServlet {
             listaTecnicoSanitarios = GenerarTecnicoSanitarios();
             listaBoxs = GenerarBoxes();
             listEspera = GenerarEspera();
-            listaPacientes = IniciarGeneracionPacientes(listEspera);
+            listaPacientes = IniciarGeneracionPacientes(listEspera, listaEspecialistas);
             AsignarSalaEspera.AsignarEspera(listEspera, listaPacientes);
             GestionBox.GestionarBoxes(listaPacientes, listaEspecialistas, listaTecnicoSanitarios, listaBoxs, listEspera);
         }
@@ -51,9 +51,9 @@ public class Controlador extends HttpServlet {
         request.getRequestDispatcher("/index.jsp").forward(request, response);
     }
 
-    public static synchronized ConcurrentLinkedQueue<Paciente> IniciarGeneracionPacientes(ConcurrentLinkedQueue<SalaEspera> listEspera) {
+    public static synchronized ConcurrentLinkedQueue<Paciente> IniciarGeneracionPacientes(ConcurrentLinkedQueue<SalaEspera> listEspera, ConcurrentLinkedQueue<Especialista> listaEspecialistas) {
         GeneradorPacientes generadorPacientes = new GeneradorPacientes(BOXES);
-        generadorPacientes.GeneradorPacientes(listEspera);
+        generadorPacientes.GeneradorPacientes(listEspera, listaEspecialistas);
         // Esperar a que se genere la lista antes de continuar
         try {
             Thread.sleep(1000); // Puedes ajustar este valor según tus necesidades

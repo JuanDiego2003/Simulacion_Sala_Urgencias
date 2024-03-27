@@ -17,7 +17,7 @@ public class GeneradorPacientes {
         this.boxes = boxes;
     }
 
-    public static synchronized void GeneradorPacientes(ConcurrentLinkedQueue<SalaEspera> listEspera) {
+    public static synchronized void GeneradorPacientes(ConcurrentLinkedQueue<SalaEspera> listEspera, ConcurrentLinkedQueue<Especialista> listEspecialistas) {
         contador();
         Thread Genpaciente = new Thread(() -> {
             int num = 0;
@@ -29,8 +29,16 @@ public class GeneradorPacientes {
                         break; // Salir del bucle si finalizar es true
                     }
                     num++;
-                    int gravedadPaciente = random.nextInt(6) + 1;
-                    Paciente paciente = new Paciente(num, "Paciente " + num, gravedadPaciente);
+                    int gravedadPaciente = random.nextInt(1);
+                    List<String> necesidadesPuedenAtender = new ArrayList<>();
+                    if (gravedadPaciente != 0) {
+                        for (Especialista listEspecialista : listEspecialistas) {
+                            necesidadesPuedenAtender.add(listEspecialista.getEspecializacion());
+                        }
+                    } else {
+                        necesidadesPuedenAtender.add("");
+                    }
+                    Paciente paciente = new Paciente(num, "Paciente " + num, gravedadPaciente, necesidadesPuedenAtender);
                     synchronized (listaPacientes) {
                         listaPacientes.add(paciente);
                     }
